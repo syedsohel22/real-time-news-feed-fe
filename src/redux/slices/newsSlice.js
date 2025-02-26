@@ -10,7 +10,7 @@ export const createNews = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5000/api/v1/news",
+        "https://real-time-news-feed-be.onrender.com/api/v1/news",
         newsData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -30,7 +30,9 @@ export const fetchNews = createAsyncThunk(
   "news/fetch",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/news");
+      const response = await axios.get(
+        "https://real-time-news-feed-be.onrender.com/api/v1/news"
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(

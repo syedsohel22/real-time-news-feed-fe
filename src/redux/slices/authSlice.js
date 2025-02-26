@@ -10,7 +10,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        "https://real-time-news-feed-be.onrender.com/api/v1/auth/login",
         userData
       );
       localStorage.setItem("token", response.data.token);
@@ -27,7 +27,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/register",
+        "https://real-time-news-feed-be.onrender.com/api/v1/auth/register",
         userData
       );
       // localStorage.setItem("token", response.data.token);
