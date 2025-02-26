@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNews } from "../redux/slices/newsSlice";
+import { addNews, fetchNews } from "../redux/slices/newsSlice";
 import Navbar from "../components/Navbar";
+import socket from "../socket";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -9,6 +10,15 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(fetchNews());
+
+    // Listen for real-time news updates
+    socket.on("newsUpdate", (newNews) => {
+      dispatch(addNews(newNews));
+    });
+
+    return () => {
+      socket.off("newsUpdate"); // Cleanup listener on unmount
+    };
   }, [dispatch]);
 
   return (

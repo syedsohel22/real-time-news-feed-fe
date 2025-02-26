@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import toast from "react-hot-toast";
 
+const notify = () => toast.success("Fresh News.");
 // Async thunk to create news
 export const createNews = createAsyncThunk(
   "news/create",
@@ -16,25 +18,28 @@ export const createNews = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create news"
+      );
     }
   }
 );
 
-// Fetch news from API
+// Fetch all news
 export const fetchNews = createAsyncThunk(
-  "news/fetchNews",
+  "news/fetch",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("http://localhost:5000/api/v1/news");
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch news"
+      );
     }
   }
 );
 
-// News Slice
 const newsSlice = createSlice({
   name: "news",
   initialState: {
@@ -42,21 +47,30 @@ const newsSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    addNews: (state, action) => {
+      state.newsList.unshift(action.payload);
+      notify();
+      // Prepend new news to the list
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // Create News
       .addCase(createNews.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(createNews.fulfilled, (state, action) => {
         state.loading = false;
-        state.newsList.push(action.payload);
+        state.newsList.unshift(action.payload); // Add new news at the top
       })
       .addCase(createNews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Fetch News
       .addCase(fetchNews.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -72,4 +86,5 @@ const newsSlice = createSlice({
   },
 });
 
+export const { addNews } = newsSlice.actions;
 export default newsSlice.reducer;
