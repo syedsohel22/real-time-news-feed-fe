@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("ws://real-time-news-feed-be.onrender.com/", {
+const socket = io("wss://real-time-news-feed-be.onrender.com/", {
   transports: ["websocket"],
   withCredentials: true,
 });
